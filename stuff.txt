@@ -1,0 +1,15 @@
+var topShelf = {
+  team1: "CCC",
+  team2: "QQQ",
+  team1PrimaryColour: [65,233,11],
+  team1SecondaryColour: [5,12,3],
+  team2PrimaryColour: [4,45,67],
+  team2SecondaryColour: [34,1,0],
+  team1Score: 4,
+  team2Score: 1,
+  team1Attacking: false,
+  mapCounter: 4,
+  seriesMaps: 6
+}
+
+<script src="./libs/p5.min.js"></script>
