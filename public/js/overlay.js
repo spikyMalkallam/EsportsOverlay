@@ -50,7 +50,7 @@ function drawOverlay(overlayData) {
   fill(255,255,255,230);
   rect((width/2)-(width/8), height/30, width/4, height/10);
 
-  image(anuEsportIcon, (width/2)-(width/8), height/30, height/10,height/10);
+  image(anuEsportIcon, (width/2)-(width/7.9), height/30, height/10,height/10);
   image(qutEsportIcon, (width/2)+(width/14), height/30, height/10,height/10);
   //Team names
   textSize(height/16)
