@@ -19,9 +19,9 @@ app.get('/', function(req, res){
 
 app.post('/', function(request, response) {
   console.log('POST /')
-  //console.dir(request.body)
+  console.dir(request.body)
   let data = request.body;
-  fs.writeFileSync('public/topShelf.json', JSON.stringify(data));
+  fs.writeFileSync('public/overlayData.json', JSON.stringify(data));
   response.writeHead(200, {'Content-Type': 'text/html'})
   response.end(JSON.stringify(data));
   //response.end('thanks')

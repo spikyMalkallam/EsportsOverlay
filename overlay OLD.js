@@ -29,7 +29,6 @@ var prevTopShelf;
 }*/
 
 function drawOverlay(overlayData) {
-  //Check if the overlay data has been updated, update overlay if nescessary
   if (JSON.stringify(prevTopShelf) == JSON.stringify(overlayData)) {
     console.log("Waiting...")
     return;
@@ -38,28 +37,58 @@ function drawOverlay(overlayData) {
     prevTopShelf = overlayData;
   }
   //Clear the screen
-  //clear();
-  //Testing background
-  background("green");
-  
-  //Centre Rectangle
+  clear();
+  //Team 1 bar
   push();
   textFont(golcaExtraBold);
   noStroke();
- 
-  fill(255,255,255,230);
-  rect((width/2)-(width/8), height/30, width/4, height/10);
-
-  image(anuEsportIcon, (width/2)-(width/8), height/30, height/10,height/10);
-  image(qutEsportIcon, (width/2)+(width/14), height/30, height/10,height/10);
-  //Team names
-  textSize(height/16)
+  fill(overlayData.team1PrimaryColour[0],overlayData.team1PrimaryColour[1],overlayData.team1PrimaryColour[2]);
+  rect(0, height/15, width/4.5, height/15);
+  //Score square
   fill("white")
-  text(overlayData.team1,(width/2)-(width/8)-overlayData.team2.length*(height/20),height/9.7);
-  text(overlayData.team2,(width/2)+(width/8)+(width/370),height/9.7);
+  rect(width/4.5, height/15, height/15, height/15);
+  fill("black");
+  textSize(height/13)
+  //Score number
+  text(overlayData.team1Score, width/4.5+height/100, height/7.9);
+  //Team icon    //SHIFT 1 LOGOS WITH THIS 5.4 or 5.5
+  image(defaultIcon, width/5.5, height/15, height/15,height/15)
+  //Team name
+  textSize(height/17)
+  fill("white")
+ 
+  text(overlayData.team1,width/5.5-overlayData.team1.length*(height/22.012),height/8.2);
   pop();
 
+  //Team 2 bar
+  push();
+  textFont(golcaExtraBold);
+  noStroke();
+  fill(overlayData.team2PrimaryColour[0],overlayData.team2PrimaryColour[1],overlayData.team2PrimaryColour[2]);
+  rect(width-width/4.5, height/15, width/4.5, height/15);
+  //Score square
+  fill("white")
+  rect(width-width/4.5-height/15, height/15, height/15, height/15);
+  fill("black");
+  textSize(height/13)
+  //Score number
+  text(overlayData.team2Score, width-width/4.5+height/110-height/15, height/7.9);
+  //Team icon              //SHIFT 2 LOGOS WITH THIS
+  image(defaultIcon, width-width/5.5-height/15, height/15, height/15,height/15)
+  //Team name
+  textSize(height/16)
+  fill("white")
+  text(overlayData.team2,width-width/5.5,height/8.2);
+  pop();
 
+  //Map counter
+  push();
+  fill(0, 200);
+  rect(width/2-width/10,height/40,width/5,height/20)
+  fill("white");
+  textSize(height/23)
+  text("Map "+overlayData.mapCounter+" - First to "+(floor(overlayData.seriesMaps/2)+1),width/2-width/9.2+width/60,height/40+height/26)
+  pop();
 }
 
 let wipe1x = 1, wipe2x = 1;
@@ -101,7 +130,7 @@ function getData(url, cb) {
 function preload() {
   //Load defualt icon
   defaultIcon = loadImage("images/anu.png");
-  anuEsportIcon = loadImage("images/anuesportBlack.png");
+  anuEsportIcon = loadImage("images/anuesport2.png");
   qutEsportIcon = loadImage("images/qutesports.webp")
   //Set icons
   //topShelf.team1Icon = anuEsportIcon;
