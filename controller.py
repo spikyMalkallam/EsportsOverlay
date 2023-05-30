@@ -1,3 +1,7 @@
+import keyboard
+import time
+import requests
+
 topShelf = {
   'team1': "ANU",
   'team2': "QUT",
@@ -12,9 +16,7 @@ topShelf = {
   'seriesMaps': 5
 }
 
-def sendRequest():
-    import requests
-
+def updateTopShelf():
     url = 'http://localhost:3000/'
     myobj = {'somekey': 'somevalue'}
 
@@ -22,5 +24,20 @@ def sendRequest():
 
     print(x.text)
 
-sendRequest()
+def checkConnection():
+    try:
+      requests.get('http://localhost:3000/')
+    except:
+        print("---CONNECTION FAILED---")
+
+while (True):
+    if keyboard.is_pressed("F13"):
+      checkConnection()
+      time.sleep(0.1)
+      continue
+    elif keyboard.is_pressed("F14"):
+      topShelf['team1Score'] += 1
+      updateTopShelf()
+      time.sleep(0.1)
+      continue
 
