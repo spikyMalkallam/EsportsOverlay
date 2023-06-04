@@ -40,7 +40,7 @@ function drawCSGOTopShelf(overlayInfo) {
 
     //Round Counter
     textSize(height/30);
-    //FOR LONG MATCH /30 FOR SHORT MATCH /16
+    //FOR LONG MATCH "/30" FOR SHORT MATCH "/16"
     text("Round "+(parseInt(overlayInfo.map.round)+1) +"/16", width/2, height/16)
 
     //Round wins
