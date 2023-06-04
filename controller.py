@@ -4,7 +4,8 @@ import requests
 
 overlayConfig = {
   'config': {
-  'game': "CSGO"
+  'game': "CSGO",
+  'topShelf': True
   }
 }
 
@@ -26,4 +27,7 @@ while (True):
       updateConfig()
       time.sleep(0.1)
       continue
-
+    elif keyboard.is_pressed("F14"):
+      time.sleep(0.1)
+      print("Closed")
+      break

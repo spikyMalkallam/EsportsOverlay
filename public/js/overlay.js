@@ -100,8 +100,14 @@ function draw() {
   getData("jsons/overlayData.json", (data) => updateOverlay(data));
   //Gets overlayConfig local file
   getData("jsons/overlayConfig.json", (data) => updateConfig(data));
-  //Draws all visual elements
-  drawCSGOTopShelf(overlayData);
+  //Draw CSGO overlay is required
+  if (overlayConfig.config.game == "CSGO") {
+    //Score, team names, time, etc
+    if (overlayConfig.config.topShelf) {
+      drawCSGOTopShelf(overlayData);
+    }
+  }
+ 
   
   // if (transitioning) {
   //   wipeTransition();
