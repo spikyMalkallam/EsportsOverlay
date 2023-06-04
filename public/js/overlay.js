@@ -1,64 +1,41 @@
 //Default icon
 var defaultIcon;
+//Team icons
 var anuEsportIcon;
 var qutEsportIcon;
+//Testing background
+var testingBackground
 //Custom Fonts
 var golcaExtraBold;
 
 //Transitioning
 var transitioning = false;
-var prevTopShelf;
+//Overlay data
+var overlayData;
+//Overlay config
+var overlayConfig
 
 
-//Team bars and map counter for series
-/*var topShelf = {
-  team1: "ANU",
-  team2: "QUT",
-  team1PrimaryColour: [0,0,0],
-  team1SecondaryColour: [255,192,203],
-  team2PrimaryColour: [0,0,255],
-  team2SecondaryColour: [230,230,250],
-  team1Icon: defaultIcon,
-  team2Icon: defaultIcon,
-  team1Score: 0,
-  team2Score: 0,
-  team1Attacking: true,
-  mapCounter: 1,
-  seriesMaps: 4
-}*/
 
-function drawOverlay(overlayData) {
-  //Check if the overlay data has been updated, update overlay if nescessary
-  if (JSON.stringify(prevTopShelf) == JSON.stringify(overlayData)) {
-    console.log("Waiting...")
+function updateOverlay(data) {
+  //Check if the overlay data has been updated, update data if nescessary
+  if (JSON.stringify(overlayData) == JSON.stringify(data)) {
+    //console.log("Overlay stagnant...")
     return;
   }
   else {
-    prevTopShelf = overlayData;
+    overlayData = data;
   }
-  //Clear the screen
-  //clear();
-  //Testing background
-  background("green");
-  
-  //Centre Rectangle
-  push();
-  textFont(golcaExtraBold);
-  noStroke();
- 
-  fill(255,255,255,230);
-  rect((width/2)-(width/8), height/30, width/4, height/10);
-
-  image(anuEsportIcon, (width/2)-(width/7.9), height/30, height/10,height/10);
-  image(qutEsportIcon, (width/2)+(width/14), height/30, height/10,height/10);
-  //Team names
-  textSize(height/16)
-  fill("white")
-  text(overlayData.team1,(width/2)-(width/8)-overlayData.team2.length*(height/20),height/9.7);
-  text(overlayData.team2,(width/2)+(width/8)+(width/370),height/9.7);
-  pop();
-
-
+}
+function updateConfig(data) {
+  //Check if the overlay config has been updated, update config if nescessary
+  if (JSON.stringify(overlayConfig) == JSON.stringify(data)) {
+    //console.log("Config stagnant...")
+    return;
+  }
+  else {
+    overlayConfig = data;
+  }
 }
 
 let wipe1x = 1, wipe2x = 1;
@@ -102,35 +79,39 @@ function preload() {
   defaultIcon = loadImage("images/anu.png");
   anuEsportIcon = loadImage("images/anuesportBlack.png");
   qutEsportIcon = loadImage("images/qutesports.webp")
-  //Set icons
-  //topShelf.team1Icon = anuEsportIcon;
-  //topShelf.team2Icon = qutEsportIcon;
-  //ANU Esports font
+  testingBackground = loadImage("images/testingBackground.jpg");
   golcaExtraBold = loadFont("fonts/golcaExtraBold.ttf");
+  //LOAD DATA BEFORE START
+  getData("jsons/overlayData.json", (data) => updateOverlay(data));
+  getData("jsons/overlayConfig.json", (data) => updateConfig(data));
 }
 
 function setup() {
-  createCanvas(windowWidth, (windowWidth/16)*9);
+  createCanvas(1920, 1080);
   angleMode(DEGREES);
 }
 
 function draw() {
+  //Clear the background
+  //clear();
+  //Testing background
+  background(testingBackground);
   //Gets overlayData local file
-  getData("overlayData.json", (data) => drawOverlay(data));
+  getData("jsons/overlayData.json", (data) => updateOverlay(data));
+  //Gets overlayConfig local file
+  getData("jsons/overlayConfig.json", (data) => updateConfig(data));
+  //Draws all visual elements
+  drawCSGOTopShelf(overlayData);
   
-  //Keeps the background clear
-  
-  //background("green")
-  
-  if (transitioning) {
-    wipeTransition();
-  }
+  // if (transitioning) {
+  //   wipeTransition();
+  // }
 }
 
 //Keep everything scaled
-function windowResized() {
-  resizeCanvas(windowWidth, (windowWidth/16)*9);
-}
+// function windowResized() {
+//   resizeCanvas(windowWidth, (windowWidth/16)*9);
+// }
 
 //Helper function I made cause I'm dumb
 function scaleBetween(value,lower,upper) {
