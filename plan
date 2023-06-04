@@ -1,5 +1,0 @@
-overlay.js is master file. 
-Loads game data. 
-Loads overlayConfig.json. 
-overlayConfig tells it which elements to draw and what game is being displayed. 
-Python scripts manipulates overlayConfig.
