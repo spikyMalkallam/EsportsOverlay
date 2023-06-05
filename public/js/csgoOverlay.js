@@ -1,4 +1,4 @@
-function drawCSGOTopShelf(overlayInfo) {
+function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     //T team name
     tTeamName = "T"
     //CT team name
@@ -40,6 +40,7 @@ function drawCSGOTopShelf(overlayInfo) {
 
     //Round Counter
     textSize(height/30);
+    textAlign(CENTER);
     //FOR LONG MATCH "/30" FOR SHORT MATCH "/16"
     text("Round "+(parseInt(overlayInfo.map.round)+1) +"/16", width/2, height/16)
 
@@ -47,7 +48,25 @@ function drawCSGOTopShelf(overlayInfo) {
     textSize(height/14);
     text(overlayInfo.map.team_t.score, (width/2)-(width/13), height/11)
     text(overlayInfo.map.team_ct.score , (width/2)+(width/13), height/11)
-    
+    //Map counter
+    push();
+    stroke("black");
+    strokeWeight(5)
+    if (overlayConfig.config.mapCounterTeam1 == 1) {
+        fill("black");
+        rect(width/2.48,height/9.5, height/30,height/55);
+    }
+    if (overlayConfig.config.mapCounterTeam1 == 2) {
+        fill("black");
+        rect(width/2.34,height/9.5, height/30,height/55);
+    }
+    else {
+        noFill()
+    }
+    rect(width/2.48,height/9.5, height/30,height/55);
+    rect(width/2.34,height/9.5, height/30,height/55);
+    pop();
+
     pop();
   }
 

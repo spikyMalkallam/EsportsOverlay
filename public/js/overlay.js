@@ -104,7 +104,7 @@ function draw() {
   if (overlayConfig.config.game == "CSGO") {
     //Score, team names, time, etc
     if (overlayConfig.config.topShelf) {
-      drawCSGOTopShelf(overlayData);
+      drawCSGOTopShelf(overlayData,overlayConfig);
     }
   }
  
