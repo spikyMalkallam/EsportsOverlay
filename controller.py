@@ -6,6 +6,7 @@ overlayConfig = {
   'config': {
   'game': "CSGO",
   'topShelf': True,
+  'playerBars': True,
   'mapCounterTeam1': 0,
   'mapCounterTeam2': 0
   }
@@ -26,21 +27,37 @@ def checkConnection():
 
 while (True):
     if keyboard.is_pressed("F13"):
-      time.sleep(0.1)
       print("Closed")
       break
     elif keyboard.is_pressed("F17"):
-      time.sleep(0.1)
       if (int(overlayConfig["config"]["mapCounterTeam1"])>1):
          continue
       else:
         overlayConfig["config"]["mapCounterTeam1"] = int(overlayConfig["config"]["mapCounterTeam1"]) + 1
       updateConfig()
+      time.sleep(0.2)
     elif keyboard.is_pressed("F18"):
-      time.sleep(0.1)
       if (int(overlayConfig["config"]["mapCounterTeam1"])<1):
          continue
       else:
         overlayConfig["config"]["mapCounterTeam1"] = int(overlayConfig["config"]["mapCounterTeam1"]) - 1
       updateConfig()
+      time.sleep(0.2)
+    elif keyboard.is_pressed("F22"):
+      if (int(overlayConfig["config"]["mapCounterTeam2"])>1):
+         continue
+      else:
+        overlayConfig["config"]["mapCounterTeam2"] = int(overlayConfig["config"]["mapCounterTeam2"]) + 1
+      updateConfig()
+      time.sleep(0.2)
+    elif keyboard.is_pressed("F23"):
+      if (int(overlayConfig["config"]["mapCounterTeam2"])<1):
+         continue
+      else:
+        overlayConfig["config"]["mapCounterTeam2"] = int(overlayConfig["config"]["mapCounterTeam2"]) - 1
+      updateConfig()
+      time.sleep(0.2)
+    elif keyboard.is_pressed("F14"):
+      updateConfig()
+      time.sleep(0.2)
       
