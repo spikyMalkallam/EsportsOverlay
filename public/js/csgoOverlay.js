@@ -1,18 +1,3 @@
-class Player {
-    constructor(index, name, health, armour, helmet, kills, deaths, money, loadout) {
-        this.index = index;
-        this.name = name;
-        this.health = health;
-        this.armour = armour;
-        this.helmet = helmet;
-        this.kills = kills;
-        this.deaths = deaths;
-        this.money = money;
-        this.loadout = loadout;
-    }
-}
-var players = [];
-
 function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     //T team name
     tTeamName = "T"
@@ -25,8 +10,8 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     fill(255,255,255,230);
     rect((width/2)-(width/7), height/30, width/3.5, height/10);
     //Icons
-    image(anuEsportIcon, (width/2)-(width/6.7), height/30, height/10,height/10);
-    image(qutEsportIcon, (width/2)+(width/11), height/30, height/10,height/10);
+    image(defaultIcon, (width/2)-(width/6.7), height/30, height/10,height/10);
+    image(defaultIcon, (width/2)+(width/11), height/30, height/10,height/10);
     //Team names
     textSize(height/16);
     fill("white");
@@ -41,20 +26,20 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
         ctTeamName = overlayInfo.map.team_ct.name;
     }
     textAlign(RIGHT);
-    text(tTeamName,(width/2)-(width/6.8),height/9.7);
+    text(gameState.team1.name,(width/2)-(width/6.8),height/9.7);
     textAlign(LEFT);
-    text(ctTeamName,(width/2)+(width/6.8),height/9.7);
+    text(gameState.team2.name,(width/2)+(width/6.8),height/9.7);
 
     //Round Time
     fill("black")
-    if (overlayInfo.phase_countdowns.phase == "live") {
+    if (overlayInfo.phase_countdowns.phase == "live" || overlayInfo.phase_countdowns.phase == "freezetime") {
         textAlign(CENTER);
         textSize(height/18);
         text(roundSecondsToMinutes(overlayInfo.phase_countdowns.phase_ends_in.slice(0,-2)), width/2, height/8.5)
     }
     else if (overlayInfo.phase_countdowns.phase == "defuse" || overlayInfo.phase_countdowns.phase == "bomb") {
-        //console.log(seconds);
-        //console.log(bombTimer);
+        //console.log("Seconds: "+seconds);
+        //console.log("Timer: "+bombTimer);
         if (overlayInfo.phase_countdowns.phase_ends_in >= 39.7) {
             bombTimer = seconds;
         }
@@ -75,6 +60,14 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
             pop();
         }
     }
+    else if (overlayInfo.round.bomb == "exploded") {
+        imageMode(CENTER);
+        image(exploded,width/2, height/10.2,exploded.width/3.5,exploded.height/3.5);
+    }
+    else if (overlayInfo.round.bomb == "defused") {
+        imageMode(CENTER);
+        image(defuseIcon,width/2, height/10.2,exploded.width/3.5,exploded.height/3.5);
+    }
 
     //Round Counter
     textSize(height/30);
@@ -84,8 +77,8 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
 
     //Round wins
     textSize(height/14);
-    text(overlayInfo.map.team_t.score, (width/2)-(width/13), height/11)
-    text(overlayInfo.map.team_ct.score , (width/2)+(width/13), height/11)
+    text(gameState.team1.score, (width/2)-(width/13), height/11)
+    text(gameState.team2.score, (width/2)+(width/13), height/11)
     //Map counters
     push();
     stroke("black");
@@ -146,20 +139,23 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     textAlign(CENTER);
     imageMode(CENTER);
     textFont(golcaExtraBold);
-    for (i=0;i<players.length;i++) {
+    for (i=0;i<gameState.team1.players.length+gameState.team2.players.length;i++) {
         if (i<5) {
             push();
             rect((width/192)+((i*width/12)+(i*5)),height/1.07,width/12,height/20,height/60);
-            fill(237, 159, 0,180);
-            rect((width/192)+((i*width/12)+(i*5)),height/1.22,width/12,height/9,height/60);
+            //FOR LONG MATCH >14, FOR SHORT MATCH >7
+            overlayData.map.round>7 ? fill(1, 113, 213,180) : fill(237, 159, 0,180);
+            gameState.team1.players[i].health==0 ? fill(121,121,121,180) : null;
+            rect((width/192)+((i*width/12)+(i*5)),height/1.24,width/12,height/8,height/60);
             pop();
             drawPlayerInfo(false);
         }
         else {
             push();
             rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.07,width/12,height/20,height/60);
-            fill(1, 113, 213,180);
-            rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.22,width/12,height/9,height/60);
+            overlayData.map.round>7 ? fill(237, 159, 0,180) : fill(1, 113, 213,180);
+            gameState.team2.players[i-5].health==0 ? fill(121,121,121,180) : null;
+            rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.24,width/12,height/8,height/60);
             pop();
             drawPlayerInfo(true);
         }
@@ -171,46 +167,84 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
   
   function drawPlayerInfo(right) {
     fill("white");
-    //LEFT SIDE
+    //LEFT SIDE 
     if (!right) {
     //Drawing name
-    textSize(25);
-    text(players[i].name,(width/192)+width/24+((i*width/12)+(i*5)),height/1.14);
+    textSize(25-((gameState.team1.players[i].name.length > 11) ? gameState.team1.players[i].name.length-11 : 0));
+    text(gameState.team1.players[i].name,(width/192)+width/24+((i*width/12)+(i*5)),height/1.164);
+    //Drawing kills and deaths
+    textSize(35);
+    image(kills,(width/192)+width/70+((i*width/12)+(i*5)),height/1.14);
+    text(gameState.team1.players[i].kills,(width/192)+width/35+((i*width/12)+(i*5)),height/1.125);
+    image(deaths,(width/192)+width/19+((i*width/12)+(i*5)),height/1.14);
+    text(gameState.team1.players[i].deaths,(width/192)+width/15+((i*width/12)+(i*5)),height/1.125);
+
+    //Drawing money
+    push();
+    fill(0, 207, 4);
+    text("$"+gameState.team1.players[i].money,(width/192)+width/24+((i*width/12)+(i*5)),height/1.086);
+    pop();
+
     textSize(40);
+    imageMode(CENTER);
     //Drawing health
-    if (!players[i].armour && !players[i].helmet) {
-        text(players[i].health,(width/192)+width/24+((i*width/12)+(i*5)),height/1.1735);
+    if (!gameState.team1.players[i].armour && !gameState.team1.players[i].helmet) {
+        if (gameState.team1.players[i].health == 0) {
+            image(dead,(width/192)+width/24+((i*width/12)+(i*5)),height/1.21,dead.width*1.25,dead.height*1.25);
+        }
+        else {
+            text(gameState.team1.players[i].health,(width/192)+width/24+((i*width/12)+(i*5)),height/1.1935);
+        }  
     }
     else {
-        text(players[i].health,width/24+((i*width/12)+(i*5)-(width/170)),height/1.1735);
+        text(gameState.team1.players[i].health,width/24+((i*width/12)+(i*5)-(width/170)),height/1.1935);
     }
     //Drawing armour icon
-    if (players[i].armour && !players[i].helmet) {
-        image(armour,(width/42)+width/24 +((i*width/12)+(i*5)),height/1.189,armour.width/5,armour.height/5);
+    if (gameState.team1.players[i].armour && !gameState.team1.players[i].helmet) {
+        image(armour,(width/42)+width/24 +((i*width/12)+(i*5)),height/1.21,armour.width/5,armour.height/5);
     }
-    if (players[i].armour && players[i].helmet) {
-        image(armourHelmet,(width/42)+width/24 +((i*width/12)+(i*5)),height/1.189,armourHelmet.width/5,armourHelmet.height/5);
+    if (gameState.team1.players[i].armour && gameState.team1.players[i].helmet) {
+        image(armourHelmet,(width/42)+width/24 +((i*width/12)+(i*5)),height/1.21,armourHelmet.width/5,armourHelmet.height/5);
     }
     }
     //RIGHT SIDE
     else {
     //Drawing name
-    textSize(25);
-    text(players[i].name,((width/2)+(width/8.2)-(width/58))+(((i-5)*width/12)+((i-5)*5)),height/1.14);
+    textSize(25-((gameState.team2.players[i-5].name.length > 11) ? gameState.team2.players[i-5].name.length-11 : 0));
+    
+    text(gameState.team2.players[i-5].name,((width/2)+(width/8.2)-(width/58))+(((i-5)*width/12)+((i-5)*5)),height/1.164);
+    //Drawing kills and deaths
+    textSize(35);
+    image(kills,((width/2)+(width/7)-(width/15))+(((i-5)*width/12)+((i-5)*5)),height/1.14);
+    text(gameState.team2.players[i-5].kills,((width/2)+(width/7)-(width/19))+(((i-5)*width/12)+((i-5)*5)),height/1.125);
+    image(deaths,((width/2)+(width/7)-(width/37))+(((i-5)*width/12)+((i-5)*5)),height/1.14);
+    text(gameState.team2.players[i-5].deaths,((width/2)+(width/7)-(width/83))+(((i-5)*width/12)+((i-5)*5)),height/1.125);
+    
+    //Drawing money
+    push();
+    fill(0, 207, 4);
+    text("$"+gameState.team2.players[i-5].money,((width/2)+(width/8.2)-(width/58))+(((i-5)*width/12)+((i-5)*5)),height/1.086);
+    pop();
+    
     textSize(40);
     //Drawing health
-    if (!players[i].armour && !players[i].helmet) {
-        text(players[i].health,((width/2)+(width/9)-(width/58))+(((i-5)*width/12)+((i-5)*5)),height/1.1735);
+    if (!gameState.team2.players[i-5].armour && !gameState.team2.players[i-5].helmet) {
+        if (gameState.team2.players[i-5].health == 0) {
+            image(dead,((width/2)+(width/9)-(width/160))+(((i-5)*width/12)+((i-5)*5)),height/1.21,dead.width*1.25,dead.height*1.25);
+        }
+        else {
+            text(gameState.team2.players[i-5].health,((width/2)+(width/9)-(width/160))+(((i-5)*width/12)+((i-5)*5)),height/1.1935);
+        }
     }
     else {
-        text(players[i].health,((width/2)+(width/9)-(width/58))+(((i-5)*width/12)+((i-5)*5)),height/1.1735);
+        text(gameState.team2.players[i-5].health,((width/2)+(width/9)-(width/58))+(((i-5)*width/12)+((i-5)*5)),height/1.1935);
     }
     //Drawing armour icon
-    if (players[i].armour && !players[i].helmet) {
-        image(armour,((width/2)+(width/7)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.189,armour.width/5,armour.height/5);
+    if (gameState.team2.players[i-5].armour && !gameState.team2.players[i-5].helmet) {
+        image(armour,((width/2)+(width/7)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.21,armour.width/5,armour.height/5);
     }
-    if (players[i].armour && players[i].helmet) {
-        image(armourHelmet,((width/2)+(width/7)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.189,armourHelmet.width/5,armourHelmet.height/5);
+    if (gameState.team2.players[i-5].armour && gameState.team2.players[i-5].helmet) {
+        image(armourHelmet,((width/2)+(width/7)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.21,armourHelmet.width/5,armourHelmet.height/5);
     }
     }
 }

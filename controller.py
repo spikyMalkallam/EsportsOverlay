@@ -8,7 +8,8 @@ overlayConfig = {
   'topShelf': True,
   'playerBars': True,
   'mapCounterTeam1': 0,
-  'mapCounterTeam2': 0
+  'mapCounterTeam2': 0,
+  'gameStateLock': True
   }
 }
 
@@ -58,6 +59,14 @@ while (True):
       updateConfig()
       time.sleep(0.2)
     elif keyboard.is_pressed("F14"):
+      updateConfig()
+      time.sleep(0.2)
+    elif keyboard.is_pressed("F15"):
+      overlayConfig["config"]["gameStateLock"] = False
+      updateConfig()
+      time.sleep(0.2)
+    elif keyboard.is_pressed("F16"):
+      overlayConfig["config"]["gameStateLock"] = True
       updateConfig()
       time.sleep(0.2)
       
