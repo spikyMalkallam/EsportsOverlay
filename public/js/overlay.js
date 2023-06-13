@@ -113,7 +113,6 @@ function preload() {
   //LOAD DATA BEFORE START
   getData("jsons/overlayData.json", (data) => updateOverlay(data));
   getData("jsons/overlayConfig.json", (data) => updateConfig(data));
-  
 }
 
 function setup() {
@@ -141,6 +140,12 @@ function draw() {
   }
   else {
     //updateGameState();
+  }
+  if (overlayData.round.phase == "over") {
+    roundWinBanner();
+  }
+  else {
+    resetWinBanner();
   }
 
   //Draw CSGO overlay is required

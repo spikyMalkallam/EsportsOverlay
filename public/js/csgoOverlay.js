@@ -133,7 +133,7 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     return minutes + ":" + additionalZero + secs;
   }
 
-  function drawPlayerBars(overlayInfo,overlayConfig) {
+  function drawPlayerBars() {
     push();
     noStroke();
     textAlign(CENTER);
@@ -142,19 +142,39 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     for (i=0;i<gameState.team1.players.length+gameState.team2.players.length;i++) {
         if (i<5) {
             push();
-            rect((width/192)+((i*width/12)+(i*5)),height/1.07,width/12,height/20,height/60);
+            rect((width/192)+((i*width/12)+(i*5)),height/1.06,width/12,height/20,height/60);
             //FOR LONG MATCH >14, FOR SHORT MATCH >7
-            overlayData.map.round>7 ? fill(1, 113, 213,180) : fill(237, 159, 0,180);
-            gameState.team1.players[i].health==0 ? fill(121,121,121,180) : null;
+            if (overlayData.player.name == gameState.team1.players[i].name) {
+                push();
+                strokeWeight(6);
+                stroke(255,255,255,255);
+                noFill();
+                rect((width/192)+((i*width/12)+(i*5)),height/1.24,width/12,height/8,height/60);
+                pop();
+            }
+            overlayData.map.round>7 ? fill(1, 113, 213,150) : fill(237, 159, 0,150);
+            gameState.team1.players[i].health==0 ? fill(121,121,121,150) : null;
+            rect((width/192)+((i*width/12)+(i*5)),height/1.24,width/12,height/8,height/60);
+            fill(255,0,0,gameState.team1.players[i].health==0 ? 0 : 100-gameState.team1.players[i].health);
             rect((width/192)+((i*width/12)+(i*5)),height/1.24,width/12,height/8,height/60);
             pop();
             drawPlayerInfo(false);
         }
         else {
             push();
-            rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.07,width/12,height/20,height/60);
-            overlayData.map.round>7 ? fill(237, 159, 0,180) : fill(1, 113, 213,180);
-            gameState.team2.players[i-5].health==0 ? fill(121,121,121,180) : null;
+            rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.06,width/12,height/20,height/60);
+            if (overlayData.player.name == gameState.team2.players[i-5].name) {
+                push();
+                strokeWeight(6);
+                stroke(255,255,255,255);
+                noFill();
+                rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.24,width/12,height/8,height/60);
+                pop();
+            }
+            overlayData.map.round>7 ? fill(237, 159, 0,150) : fill(1, 113, 213,150);
+            gameState.team2.players[i-5].health==0 ? fill(121,121,121,150) : null;
+            rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.24,width/12,height/8,height/60);
+            fill(255,0,0,gameState.team2.players[i-5].health==0 ? 0 : 100-gameState.team2.players[i-5].health);
             rect(((width/2)+(width/12)-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.24,width/12,height/8,height/60);
             pop();
             drawPlayerInfo(true);
@@ -249,5 +269,51 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     }
 }
 
-
+let wipe1y = 1, wipe2y = 1;
+let slices = [];
+function roundWinBanner() {
+    push();
+    fill("black");
+    stroke("black");
+    rect(width/2.795,width/12,width/3.51,wipe1y);
+    pop(); 
+    wipe1y += 2;
+    if (wipe1y>=height/6.35294117647) {
+        wipe1y=height/6.35294117647; 
+    }
+    wipe1y += sin(scaleBetween(wipe1y,0,height/6.35294117647,0,180))*10;
+  
+    push();
+    fill("white");
+    stroke("white");
+    rect(width/2.795,width/12,width/3.51,wipe2y);
+    pop();
+    
+    wipe2y += 1;
+    wipe2y += sin(scaleBetween(wipe2y,0,height/6.35294117647,0,180))*9;
+    if (!swapedSides) {
+        winningTeamName = overlayData.round.win_team == "CT" ? gameState.team2.name : gameState.team1.name;
+    }
+    else {
+        winningTeamName = overlayData.round.win_team == "CT" ? gameState.team1.name : gameState.team2.name;
+    }
+    
+    slice = anuEsportIcon.get(0,0,defaultIcon.width,wipe1y);
+    image(slice,width/2.75,width/11.8);
+    textFont(golcaExtraBold);
+    textSize(80);
+    console.log(width/13.3)
+    if (wipe1y > width/15.3) {
+        text(winningTeamName,width/2.3,width/7.3);
+    }
+    if (wipe1y > width/13.3) {
+        textSize(30);
+        text("WINS THE ROUND",width/2.3,width/6.49)
+    }
+}
+function resetWinBanner() {
+    wipe1y = 0;
+    wipe2y = 0;
+    slices = [];
+}
 
