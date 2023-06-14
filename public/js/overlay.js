@@ -141,7 +141,7 @@ function draw() {
   else {
     //updateGameState();
   }
-  if (overlayData.round.phase == "over" || true) {
+  if (overlayData.round.phase == "over") {
     roundWinBanner();
   }
   else {
