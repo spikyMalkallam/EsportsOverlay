@@ -1,2 +1,2 @@
-<h1> Flexible Esports Overlay </h1>
-A web based Esports Overlay with game intergration, designed for OBS.
+<h1> CSGO Esports Overlay </h1>
+A web based CSGO Esports Overlay with gameState intergration, designed for OBS.
