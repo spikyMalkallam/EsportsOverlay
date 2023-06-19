@@ -9,7 +9,7 @@ overlayConfig = {
   'playerBars': True,
   'mapCounterTeam1': 0,
   'mapCounterTeam2': 0,
-  'gameStateLock': True
+  'gameStateLock': False
   }
 }
 
