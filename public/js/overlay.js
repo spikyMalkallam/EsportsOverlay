@@ -137,9 +137,9 @@ function draw() {
   d = new Date();
   seconds = (d.getHours()*3600)+(d.getMinutes()*60)+d.getSeconds();
   //Clear the background
-  //clear();
+  clear();
   //Testing background
-  background(testingBackground);
+  //background(testingBackground);
   //Gets overlayData local file
   getData("jsons/overlayData.json", (data) => updateOverlay(data));
   //Gets overlayConfig local file

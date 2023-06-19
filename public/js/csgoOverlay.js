@@ -294,11 +294,12 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
         x = gameState.team2.players[i-5].loadout[k].height/(height/60);
         yyyyy = gameState.team2.players[i-5].loadout[k].width/x;
         image(gameState.team2.players[i-5].loadout[k],(width/26+(width/2)+(width/30)+((i-5)*width/12)+((i-5)*5))+(loadoutWidth),height/1.043,yyyyy,height/60);
-        loadoutWidth += gameState.team2.players[i-5].loadout[k].width;
+        loadoutWidth += yyyyy+3;
     }
     
     pop();
     }
+
 }
 
 let wipe1y = 1, wipe2y = 1;
