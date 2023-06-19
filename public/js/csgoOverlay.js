@@ -237,12 +237,12 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     loadoutWidth = 0;
     imageMode(CORNER);
     for (k=0;k<gameState.team1.players[i].loadout.length;k++) {
-        //loadoutWidth += gameState.team1.players[i].loadout[k].width;
-        image(gameState.team1.players[i].loadout[k],width/192,height/1.06);
+        x = gameState.team1.players[i].loadout[k].height/(height/60);
+        yyyyy = gameState.team1.players[i].loadout[k].width/x;
+        image(gameState.team1.players[i].loadout[k],(width/160) +((i*width/12)+(i*5))+(loadoutWidth),height/1.043,yyyyy,height/60);
+        loadoutWidth += yyyyy+3;
     }
     
-    imageMode(CORNER);
-    //image(loadoutIcons[1],width/192,height/1.06,loadoutIcons[1].width/2.5,loadoutIcons[1].height/2.5);
     pop();
 
     }
@@ -285,6 +285,19 @@ function drawCSGOTopShelf(overlayInfo,overlayConfig) {
     if (gameState.team2.players[i-5].armour && gameState.team2.players[i-5].helmet) {
         image(armourHelmet,(((width/2)+(width/7)+(width/192))-(width/52))+(((i-5)*width/12)+((i-5)*5)),height/1.21,armourHelmet.width/6.2,armourHelmet.height/6.2);
     }
+
+    //Drawing loadout
+    push();
+    loadoutWidth = 0;
+    imageMode(CORNER);
+    for (k=0;k<gameState.team2.players[i-5].loadout.length;k++) {
+        x = gameState.team2.players[i-5].loadout[k].height/(height/60);
+        yyyyy = gameState.team2.players[i-5].loadout[k].width/x;
+        image(gameState.team2.players[i-5].loadout[k],(width/26+(width/2)+(width/30)+((i-5)*width/12)+((i-5)*5))+(loadoutWidth),height/1.043,yyyyy,height/60);
+        loadoutWidth += gameState.team2.players[i-5].loadout[k].width;
+    }
+    
+    pop();
     }
 }
 
@@ -462,7 +475,7 @@ function generateLoadout(index) {
         else if(currentItem.name == "weapon_flashbang") {
             loadoutToReturn.push(loadoutIcons[11]);
         }
-        else if(currentItem.name == "heIconweapon_hegrenade") {
+        else if(currentItem.name == "weapon_hegrenade") {
             loadoutToReturn.push(loadoutIcons[15]);
         }
         else if(currentItem.name == "weapon_incgrenade") {
